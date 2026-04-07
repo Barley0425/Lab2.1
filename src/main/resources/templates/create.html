@@ -1,29 +1,136 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>CREATE</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Новый пост</title>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #fafafa;
+            color: #262626;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #262626;
+        }
+
+        .subtitle {
+            color: #8e8e8e;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #262626;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #0095f6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .submit-btn {
+            background: #0095f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #1877f2;
+        }
+
+        .cancel-btn {
+            background: none;
+            color: #8e8e8e;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background: #efefef;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <h1 th:text="${appName}" style="color: green">Default app name</h1>
-    <hr/>
-    <div class="content">
-        <div class="row">
-            <div class="col-md-12">
-                <form method="post">
-                    <div class="form-group">
-                        <textarea name="text" class="form-control" cols="30" rows="7" placeholder="Text"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" class="btn btn-primary" value="Добавить новый пост">
-                    </div>
-                </form>
+    <div class="card">
+        <h1>Новый пост</h1>
+        <div class="subtitle">Напишите что-нибудь</div>
+
+        <form action="/new" method="post">
+            <div class="form-group">
+                <label for="postText">Текст</label>
+                <textarea
+                        id="postText"
+                        name="text"
+                        rows="5"
+                        placeholder="Ваш текст..."
+                ></textarea>
             </div>
-        </div>
+
+            <div class="button-group">
+                <a href="/" class="cancel-btn">Отмена</a>
+                <button type="submit" class="submit-btn">Опубликовать</button>
+            </div>
+        </form>
     </div>
 </div>
 </body>
-</html>>
+</html>

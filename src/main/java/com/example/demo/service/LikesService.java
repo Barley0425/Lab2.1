@@ -1,27 +1,38 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Post;
-import org.springframework.stereotype.Service;
+import com.example.demo.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.Optional;
 
 @Service
 public class LikesService {
 
     @Autowired
-    private PostService postService;
+    private PostRepository postRepository;
 
+    @Transactional
     public int like(Long postId) {
-        List<Post> posts = postService.listAllPosts();
+        System.out.println("Processing like for post ID: " + postId); // Логирование
 
-        // Проверка на существование поста
-        if (postId < 0 || postId >= posts.size()) {
+        Optional<Post> postOpt = postRepository.findById(postId);
+
+        if (postOpt.isEmpty()) {
+            System.out.println("Post not found with ID: " + postId);
             throw new IllegalArgumentException("Post with id " + postId + " not found");
         }
 
-        Post post = posts.get(postId.intValue());
+        Post post = postOpt.get();
+        System.out.println("Current likes: " + post.getLikes());
+
         int newLikesCount = post.getLikes() + 1;
         post.setLikes(newLikesCount);
-        return newLikesCount;
+
+        Post savedPost = postRepository.save(post);
+        System.out.println("New likes count: " + savedPost.getLikes());
+
+        return savedPost.getLikes();
     }
 }

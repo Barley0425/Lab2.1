@@ -1,41 +1,190 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>MY SITE</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="/main.js"></script>
+    <title>Моё супер приложение</title>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #fafafa;
+            color: #262626;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid #dbdbdb;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #262626;
+        }
+
+        .header p {
+            color: #8e8e8e;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .create-btn {
+            display: inline-block;
+            background: #0095f6;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .create-btn:hover {
+            background: #1877f2;
+        }
+
+        .post {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .post-id {
+            color: #0095f6;
+            font-weight: 600;
+        }
+
+        .post-date {
+            color: #8e8e8e;
+            font-size: 12px;
+        }
+
+        .post-text {
+            font-size: 16px;
+            color: #262626;
+            margin-bottom: 16px;
+            word-wrap: break-word;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #efefef;
+        }
+
+        .likes-count {
+            font-size: 14px;
+            color: #262626;
+        }
+
+        .like-btn {
+            background: none;
+            border: none;
+            color: #262626;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .like-btn:hover {
+            background: #efefef;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #8e8e8e;
+            padding: 40px 20px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-    <h1 th:text="${appName}" style="color: green">Default app name</h1>
-    <hr/>
-    <div class="content">
-        <div class="row article" th:each="post : ${posts}">
-            <div class="col-md-10 col-md-offset-1">
-                <h3 th:text="${'Пост от ' + post.creationDate}">Пост от 2019.09.08</h3>
-            </div>
-            <div class="col-md-11 description">
-                <p class="description-text" th:text="${post.text}">Text</p>
-            </div>
-            <div class="col-md-1">
-                <button class="btn btn-sm btn-secondary like" th:attr="data-post-id=${post.id}">0 ❤</button>
-            </div>
-            <div class="col-md-12">
-                <hr/>
-            </div>
-        </div>
+    <div class="header">
+        <h1 th:text="${appName}">Моё супер приложение</h1>
+        <p>Делитесь мыслями</p>
+        <a href="/new" class="create-btn">+ Новый пост</a>
     </div>
 
-    <div class="row">
-        <div class="col-md-12 text-end mb-3">
-            <a href="/new" class="btn btn-success btn-lg">
-                <i class="bi bi-plus-circle"></i> Добавить новый пост
-            </a>
+    <div th:if="${posts.empty}" class="empty-state">
+        <p>Нет постов</p>
+        <p style="font-size: 14px; margin-top: 8px;">Напишите что-нибудь</p>
+    </div>
+
+    <div th:each="post : ${posts}" class="post">
+        <div class="post-header">
+            <span class="post-id">Пост #<span th:text="${post.id}">0</span></span>
+            <span class="post-date" th:text="${#dates.format(post.creationDate, 'dd.MM.yyyy HH:mm')}">Дата</span>
+        </div>
+
+        <div class="post-text" th:text="${post.text}">Текст</div>
+
+        <div class="post-footer">
+            <div class="likes-count">
+                <span th:id="'likes-' + ${post.id}" th:text="${post.likes}">0</span> лайков
+            </div>
+            <button class="like-btn" th:data-post-id="${post.id}" onclick="likePost(this)">❤️ Лайкнуть</button>
         </div>
     </div>
 </div>
+
+<script>
+    function likePost(button) {
+        const postId = button.getAttribute('data-post-id');
+        const likesSpan = document.getElementById('likes-' + postId);
+
+        fetch('/post/' + postId + '/like', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(likes => {
+            if (likesSpan) {
+                likesSpan.textContent = likes;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Не удалось поставить лайк');
+        });
+    }
+</script>
 </body>
-</html>>
+</html>
